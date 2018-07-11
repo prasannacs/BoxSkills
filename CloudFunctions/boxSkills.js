@@ -1,7 +1,7 @@
 const PubSub = require(`@google-cloud/pubsub`);
 
 module.exports = function boxSkills(req, res) {
-    const fileName = req.body.source.name;
+    var fileName = req.body.source.name;
     var fileId = req.body.source.id;
     var readToken = req.body.token.read.access_token;
     var writeToken = req.body.token.write.access_token;
@@ -12,9 +12,11 @@ module.exports = function boxSkills(req, res) {
     console.log('Valid file '+filext);
     var topicName;
 	topicName = 'box-skills-image-topic'
-    console.log('topciNane ',topicName);
+    console.log('topic ',topicName);
     const pubsub = new PubSub();
-    const dataBuffer = Buffer.from(fileName,fileId,readToken,writeToken);
+    var concatBuff = fileName+'-'+fileId+'-'+readToken+'-'+writeToken;
+    console.log('Buff string',concatBuff);
+    const dataBuffer = Buffer.from(concatBuff);
     pubsub
      .topic(topicName)
      .publisher()
