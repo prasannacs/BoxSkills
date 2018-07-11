@@ -6,9 +6,12 @@
  */
 
 const express = require('express');
+const bodyParser = require('body-parser')
+
 const app = express();
 const boxSkills = require('./boxSkills.js');
 
+app.use(bodyParser.urlencoded({ extended: true }))
 app.get('/', boxSkills);
 
 /*
