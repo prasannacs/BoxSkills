@@ -13,3 +13,7 @@ const boxSkills = require('./boxSkills.js');
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', boxSkills);
+
+module.exports = function boxSkills(req, res) {
+    res.send('Box Skills - Hello');
+}
