@@ -1,10 +1,15 @@
-var express = require('express');
-var app = express();
+/**
+ * Responds to any HTTP request that can provide a "message" field in the body.
+ *
+ * @param {!Object} req Cloud Function request context.
+ * @param {!Object} res Cloud Function response context.
+ */
 
-var hello = require('./hello.js');
+const express = require('express');
+const bodyParser = require('body-parser')
+const app = express();
+const boxSkills = require('./boxSkills.js');
 
-app.get('/hello', hello);
+app.use(bodyParser.urlencoded({ extended: true }))
 
-app.listen(3000, function() {
-    console.log('Listening...');
-});
+app.get('/', boxSkills);
