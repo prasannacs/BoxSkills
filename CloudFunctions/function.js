@@ -1,0 +1,1 @@
+exports.boxSkills = require('./boxSkills');
