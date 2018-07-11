@@ -6,14 +6,11 @@
  */
 
 const express = require('express');
-const bodyParser = require('body-parser')
 const app = express();
 const boxSkills = require('./boxSkills.js');
 
-app.use(bodyParser.urlencoded({ extended: true }))
-
 app.get('/', boxSkills);
 
-module.exports = function boxSkills(req, res) {
-    res.send('Box Skills - Hello');
-}
+app.listen(3000, function() {
+    console.log('Listening...');
+});
