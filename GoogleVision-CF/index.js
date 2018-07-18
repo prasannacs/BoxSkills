@@ -2,21 +2,6 @@
 const vision = require('@google-cloud/vision');
 const BoxSDK = require('box-node-sdk');
 
-// Create a static keyword metadata card
-const keywordCard = {
-  type: 'skill_card',
-  skill_card_type: 'keyword',
-  skill: { type: 'service', id: 'my-box-skill' },
-  invocation: { type: 'skill_invocation',  id: 'some_id' },
-  title: 'Topics',
-  duration: 30,
-  entries: [{
-    type: 'text',
-    text: 'hello_world',
-    appears: [{ start: 0, end: 1 }]
-  }]
-};
-
 exports.imageSubscriber = (event, callback) => {
   const pubsubMessage = event.data;
   console.log('Google Vision - Image subscriber');
@@ -59,6 +44,22 @@ visionClient
     console.error('ERROR:', err);
   });
   
+  
+// Create a static keyword metadata card
+const keywordCard = {
+  type: 'skill_card',
+  skill_card_type: 'keyword',
+  skill: { type: 'service', id: 'my-box-skill' },
+  invocation: { type: 'skill_invocation',  id: 'some_id' },
+  title: 'Topics',
+  duration: 30,
+  entries: [{
+    type: 'text',
+    text: 'hello_world',
+    appears: [{ start: 0, end: 1 }]
+  }]
+};
+  
   // Initialize a basic Box client with the access token
   let client = sdk.getBasicClient(writeToken);
 
@@ -67,7 +68,7 @@ visionClient
   client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards')
     .finally(() => {
       // Only add one card for this example.
-      let metadata = cards: [keywordCard];
+      let metadata = [keywordCard];
       // Write the metadata to the file
       client.files.addMetadata(fileId, 'global', 'boxSkillsCards', metadata);
       // Render a HTTP 200 status code and a body 
