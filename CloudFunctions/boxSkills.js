@@ -14,7 +14,7 @@ module.exports = function boxSkills(req, res) {
 	topicName = 'box-skills-image-topic'
     console.log('topic ',topicName);
     const pubsub = new PubSub();
-    var concatBuff = fileName+'-'+fileId+'-'+readToken+'-'+writeToken;
+    var concatBuff = fileName+'-Skills-'+fileId+'-Skills-'+readToken+'-Skills-'+writeToken;
     console.log('Buff string',concatBuff);
     const dataBuffer = Buffer.from(concatBuff);
     pubsub
