@@ -20,8 +20,21 @@ const keywordCard = {
 exports.imageSubscriber = (event, callback) => {
   const pubsubMessage = event.data;
   console.log('Google Vision - Image subscriber');
-  console.log(Buffer.from(pubsubMessage.data, 'base64').toString());
-
+  var str = Buffer.from(pubsubMessage.data, 'base64').toString();
+  console.log(str);
+  
+  var fileName = str.slice(0,str.indexOf('-Skills-'));
+  str = str.slice(fileName.length+8, str.length);
+  var fileId = str.slice(0,str.indexOf('-Skills-'));
+  str = str.slice(fileId.length+8, str.length);
+  var readToken = str.slice(0,str.indexOf('-Skills-'));
+  str = str.slice(fileId.length+8, str.length);
+  var writeToken = str.slice(0,str.indexOf('-Skills-'));
+  
+  console.log('fileName -- ',fileName);
+  console.log('fileId -- ',fileId);
+  console.log('readToken -- ',readToken);
+  console.log('writeToken -- ',writeToken);
 
 var sdk = new BoxSDK({
   clientID: 'quctsqlnvjtanl507z6axh22jyd9jzg1',
@@ -46,13 +59,8 @@ client
     console.error('ERROR:', err);
   });
   
-  // Determine the file ID and write access token
-  let body = JSON.parse(event.body);
-  let fileId = body.source.id;
-  let accessToken = body.token.write.access_token;
-
   // Initialize a basic Box client with the access token
-  let client = sdk.getBasicClient(accessToken);
+  let client = sdk.getBasicClient(writeToken);
 
   // First try and delete any boxSkillsCards
   // metadata that has been written previously
