@@ -43,10 +43,10 @@ var sdk = new BoxSDK({
 
 
 // Creates a client
-const client = new vision.ImageAnnotatorClient();
+const visionClient = new vision.ImageAnnotatorClient();
 
 // Performs label detection on the image file
-client
+visionClient
   //.labelDetection('./resources/invest-graph.jpg')
   .labelDetection('https://picsum.photos/458/354/?image=279')
   .then(results => {
