@@ -2,6 +2,12 @@
 const vision = require('@google-cloud/vision');
 const BoxSDK = require('box-node-sdk');
 
+exports.imageSubscriber = (event, callback) => {
+  const pubsubMessage = event.data;
+  console.log('Google Vision - Image subscriber');
+  console.log(Buffer.from(pubsubMessage.data, 'base64').toString());
+
+
 var sdk = new BoxSDK({
   clientID: 'quctsqlnvjtanl507z6axh22jyd9jzg1',
   clientSecret: '37isljVOklKg3CY91Z737sEU1ORisS84'
@@ -24,3 +30,6 @@ client
   .catch(err => {
     console.error('ERROR:', err);
   });
+      callback();
+
+};
