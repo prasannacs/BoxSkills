@@ -28,7 +28,10 @@ exports.imageSubscriber = (event, callback) => {
 
 
         // Creates a client
-        const visionClient = new vision.ImageAnnotatorClient();
+        const visionClient = new vision.ImageAnnotatorClient({
+  projectId: 'sixth-hawk-194719',
+  keyFilename: '/home/prasannacs_gcloud/imageSubscriber.json'
+});
         var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
         boxFileURL = 'https://www.w3schools.com/images/w3schools_green.jpg';
         console.log('boxFileURL -- ', boxFileURL);
