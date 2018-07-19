@@ -29,11 +29,12 @@ var sdk = new BoxSDK({
 
 // Creates a client
 const visionClient = new vision.ImageAnnotatorClient();
+var boxFileURL = 'https://api.box.com/2.0/files/'+fileId+'/content?access_token='+readToken;
+console.log('boxFileURL -- ',boxFileURL);
 
 // Performs label detection on the image file
 visionClient
-  //.labelDetection('./resources/invest-graph.jpg')
-  .labelDetection('https://picsum.photos/458/354/?image=279')
+  .labelDetection(boxFileURL)
   .then(results => {
     const labels = results[0].labelAnnotations;
 
@@ -41,25 +42,47 @@ visionClient
     labels.forEach(label => console.log(label.description));
   })
   .catch(err => {
-    console.error('ERROR:', err);
+    console.error('visionClient ERROR:', err);
   });
   
   
-// Create a static keyword metadata card
-const keywordCard = {
-  type: 'skill_card',
-  skill_card_type: 'keyword',
-  skill: { type: 'service', id: 'my-box-skill' },
-  invocation: { type: 'skill_invocation',  id: 'some_id' },
-  title: 'Topics',
-  duration: 30,
-  entries: [{
-    type: 'text',
-    text: 'hello_world',
-    appears: [{ start: 0, end: 1 }]
-  }]
-};
-  
+// Create a  keyword metadata card
+  let keywordsMetadata = {
+        "cards": [
+            {
+                "type": "skill_card",
+                "skill_card_type": "keyword",
+                "skill": {
+                    "type": "service",
+                    "id": "box-skill-google-vision"
+                },
+                "invocation": {
+                    "type": "skill_invocation",
+                    "id": "5555"
+                },
+                "skill_card_title": {
+                    "message": "Tags"
+                },
+                "entries": [{"text":"Process"}]
+            },
+            {
+                "type": "skill_card",
+                "skill_card_type": "transcript",
+                "skill": {
+                    "type": "service",
+                    "id": "box-skill-microsoft-faces"
+                },
+                "invocation": {
+                    "type": "skill_invocation",
+                    "id": "5555"
+                },
+                "skill_card_title": {
+                    "message": "Description"
+                },
+                "entries": [{"text":"Desc"}]
+            }
+        ]
+    }  
   // Initialize a basic Box client with the access token
   let client = sdk.getBasicClient(writeToken);
 
@@ -70,14 +93,19 @@ const keywordCard = {
       // Only add one card for this example.
       let metadata = [keywordCard];
       // Write the metadata to the file
-      client.files.addMetadata(fileId, 'global', 'boxSkillsCards', metadata);
-      // Render a HTTP 200 status code and a body 
-      // for the Lambda function
-      callback(null, { statusCode: 200, body: 'Data saved' });
-    }).catch((error) => {
-      callback('Data could not be saved');
-    });
-  
+      client.files.addMetadata(fileId, 'global', 'boxSkillsCards',  keywordsMetadata, (error, res) => {
+        if (error) {
+            console.log(error);
+        } else {
+            
+            res = {
+                statusCode: 200,
+                body: "Vision Skill Done"
+            }
+            console.log("skill updated");
+            return res;
+        }
+        });
       callback();
 
 };
