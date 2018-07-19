@@ -30,6 +30,7 @@ exports.imageSubscriber = (event, callback) => {
         // Creates a client
         const visionClient = new vision.ImageAnnotatorClient();
         var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
+        boxFileURL = 'https://www.w3schools.com/images/w3schools_green.jpg';
         console.log('boxFileURL -- ', boxFileURL);
 
         // Performs label detection on the image file
