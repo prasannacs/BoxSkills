@@ -22,8 +22,8 @@ exports.imageSubscriber = (event, callback) => {
         console.log('writeToken -- ', writeToken);
 
         var sdk = new BoxSDK({
-            clientID: 'quctsqlnvjtanl507z6axh22jyd9jzg1',
-            clientSecret: '37isljVOklKg3CY91Z737sEU1ORisS84'
+            clientID: 'foo',
+            clientSecret: 'bar'
         });
 
 
@@ -31,7 +31,7 @@ exports.imageSubscriber = (event, callback) => {
         const visionClient = new vision.ImageAnnotatorClient();
         console.log('visionClient - ',visionClient);
         var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
-        boxFileURL = 'https://www.w3schools.com/images/w3schools_green.jpg';
+        //boxFileURL = 'https://www.w3schools.com/images/w3schools_green.jpg';
         console.log('boxFileURL -- ', boxFileURL);
 
         // Performs label detection on the image file
@@ -47,7 +47,7 @@ exports.imageSubscriber = (event, callback) => {
                 console.error('visionClient ERROR:', err);
             });
 
-
+        console.log('Vision API processing completed');
         // Create a  keyword metadata card
         let keywordsMetadata = {
             "cards": [{
@@ -91,6 +91,7 @@ exports.imageSubscriber = (event, callback) => {
         // metadata that has been written previously
         client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards')
             .finally(() => {
+                        log.console('in finally block');
                     // Write the metadata to the file
                     client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
                         if (error) {
