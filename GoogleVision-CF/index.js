@@ -13,7 +13,7 @@ exports.imageSubscriber = (event, callback) => {
         var fileId = str.slice(0, str.indexOf('-Skills-'));
         str = str.slice(fileId.length + 8, str.length);
         var readToken = str.slice(0, str.indexOf('-Skills-'));
-        str = str.slice(fileId.length + 8, str.length);
+        str = str.slice(readToken.length + 8, str.length);
         var writeToken = str.slice(0, str.indexOf('-Skills-'));
 
         console.log('fileName -- ', fileName);
