@@ -91,7 +91,7 @@ exports.imageSubscriber = (event, callback) => {
         // metadata that has been written previously
         client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards')
             .finally(() => {
-                        log.console('in finally block');
+                        console.log('in finally block');
                     // Write the metadata to the file
                     client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
                         if (error) {
