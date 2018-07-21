@@ -51,7 +51,7 @@ exports.imageSubscriber = (event, callback) => {
             console.error('visionClient ERROR:', err);
         });
 
-    console.log('Vision API processing completed');
+    console.log('Vision API processing completed',entriesTags);
     // Create a  keyword metadata card
     let keywordsMetadata = {
         "cards": [{
