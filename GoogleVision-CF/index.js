@@ -25,6 +25,8 @@ exports.imageSubscriber = (event, callback) => {
         clientID: 'foo',
         clientSecret: 'bar'
     });
+    
+    var entriesTags = [];
 
 
     // Creates a client
@@ -42,6 +44,8 @@ exports.imageSubscriber = (event, callback) => {
 
             console.log('Labels:');
             labels.forEach(label => console.log(label.description));
+            labels.forEach(label => entriesTags.push(label.description));
+
         })
         .catch(err => {
             console.error('visionClient ERROR:', err);
@@ -62,25 +66,9 @@ exports.imageSubscriber = (event, callback) => {
                     "id": "5555"
                 },
                 "skill_card_title": {
-                    "message": "Tags"
+                    "message": "Google Vision Tags"
                 },
-                "entries": [{ "text": "Process" }]
-            },
-            {
-                "type": "skill_card",
-                "skill_card_type": "transcript",
-                "skill": {
-                    "type": "service",
-                    "id": "box-skill-microsoft-faces"
-                },
-                "invocation": {
-                    "type": "skill_invocation",
-                    "id": "5555"
-                },
-                "skill_card_title": {
-                    "message": "Description"
-                },
-                "entries": [{ "text": "Desc" }]
+                "entries": [{ "text": entriesTags }]
             }
         ]
     }
