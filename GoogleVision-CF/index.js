@@ -44,7 +44,7 @@ exports.imageSubscriber = (event, callback) => {
 
             console.log('Labels:');
             labels.forEach(label => console.log(label.description));
-            labels.forEach(label => entriesTags.push(label.description));
+            labels.forEach(label => entriesTags.push({'text': label.description}));
 
         })
         .catch(err => {
@@ -68,7 +68,7 @@ exports.imageSubscriber = (event, callback) => {
                 "skill_card_title": {
                     "message": "Google Vision Tags"
                 },
-                "entries": [{ "text": entriesTags }]
+                "entries": entriesTags
             }
         ]
     }
