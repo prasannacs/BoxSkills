@@ -35,21 +35,22 @@ exports.imageSubscriber = (event, callback) => {
     var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
     //boxFileURL = 'https://www.w3schools.com/images/w3schools_green.jpg';
     console.log('boxFileURL -- ', boxFileURL);
+    
+    var labels;
 
     // Performs label detection on the image file
     visionClient
         .labelDetection(boxFileURL)
         .then(results => {
-            const labels = results[0].labelAnnotations;
-
-            console.log('Labels:');
-            labels.forEach(label => console.log(label.description));
-            labels.forEach(label => entriesTags.push({'text': label.description}));
-
+            labels = results[0].labelAnnotations;
         })
         .catch(err => {
             console.error('visionClient ERROR:', err);
         });
+    
+    console.log('Labels:');
+    labels.forEach(label => console.log(label.description));            
+    labels.forEach(label => entriesTags.push({'text': label.description}));
 
     console.log('Vision API processing completed',entriesTags);
     // Create a  keyword metadata card
