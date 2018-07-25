@@ -1,6 +1,7 @@
 // Imports the Google Cloud client library
 const vision = require('@google-cloud/vision');
 const BoxSDK = require('box-node-sdk');
+const Request = require("request");
 
 exports.imageSubscriber = (event, callback) => {
     const pubsubMessage = event.data;
@@ -28,29 +29,30 @@ exports.imageSubscriber = (event, callback) => {
     
     var entriesTags = [];
 
-
-    // Creates a client
-    const visionClient = new vision.ImageAnnotatorClient();
-    console.log('visionClient - ', visionClient);
     var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
-    //boxFileURL = 'https://www.w3schools.com/images/w3schools_green.jpg';
-    console.log('boxFileURL -- ', boxFileURL);
+    var visionBody = {"requests": [{"image": {"source": {"imageUri": boxFileURL}},"features": [{"type": "LABEL_DETECTION","maxResults": 25},{"type": "LABEL_DETECTION","maxResults": 2}]}]}
     
-    var labels;
+   var options = {
+      method: 'POST',
+      json: visionBody,
+      url: 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAuf-Etfi6ImFsdkH8Ws2mTNXFZWkTIeb0',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
 
-    // Performs label detection on the image file
-    visionClient
-        .labelDetection(boxFileURL)
-        .then(results => {
-            labels = results[0].labelAnnotations;
-        })
-        .catch(err => {
-            console.error('visionClient ERROR:', err);
-        });
-    
-    console.log('Labels:');
-    labels.forEach(label => console.log(label.description));            
-    labels.forEach(label => entriesTags.push({'text': label.description}));
+    function callback(error, response, body) {
+      //console.log('Body ',body.responses)
+      if (!error && response.statusCode == 200) {
+        var labels = body.responses[0].labelAnnotations;
+        labels.forEach(label => entriesTags.push({'text': label.description}))
+      }
+      if (error)  {
+        console.log('Error--',error)
+      }
+    }
+ 
+    Request(options, callback);
 
     console.log('Vision API processing completed',entriesTags);
     // Create a  keyword metadata card
