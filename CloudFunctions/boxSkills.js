@@ -8,7 +8,7 @@ module.exports = function boxSkills(req, res) {
     console.log(fileName);
     
     var filext = fileName.substring(fileName.indexOf("."))
-  if( filext == ".jpg" || filext == ".png" || filext == ".bmp" ) {
+  if( filext == ".jpg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" ) {
     console.log('Valid file '+filext);
     var topicName;
 	topicName = 'box-skills-image-topic'
