@@ -42,10 +42,27 @@ exports.imageSubscriber = (event, callback) => {
     }
 
     function callback(error, response, body) {
-      //console.log('Body ',body.responses)
+      console.log('Body ',body.responses)
       if (!error && response.statusCode == 200) {
         var labels = body.responses[0].labelAnnotations;
         labels.forEach(label => entriesTags.push({'text': label.description}))
+              // Initialize a basic Box client with the access token
+        let client = sdk.getBasicClient(writeToken);
+        client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
+            if (error) {
+                console.log('Error in adding metadata ', error);
+            }
+            else {
+
+                res = {
+                    statusCode: 200,
+                    body: "Vision Skill Done"
+                }
+                console.log("skill updated");
+                return res;
+            }
+        });
+
       }
       if (error)  {
         console.log('Error--',error)
@@ -75,20 +92,4 @@ exports.imageSubscriber = (event, callback) => {
             }
         ]
     }
-    // Initialize a basic Box client with the access token
-    let client = sdk.getBasicClient(writeToken);
-    client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
-        if (error) {
-            console.log('Error in adding metadata ', error);
-        }
-        else {
-
-            res = {
-                statusCode: 200,
-                body: "Vision Skill Done"
-            }
-            console.log("skill updated");
-            return res;
-        }
-    });
 }
