@@ -30,7 +30,7 @@ exports.imageSubscriber = (event, callback) => {
     var entriesTags = [];
 
     var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
-    var visionBody = {"requests": [{"image": {"source": {"imageUri": boxFileURL}},"features": [{"type": "LABEL_DETECTION","maxResults": 25},{"type": "LABEL_DETECTION","maxResults": 2}]}]}
+    var visionBody = {"requests": [{"image": {"source": {"imageUri": boxFileURL}},"features": [{"type": "LABEL_DETECTION","maxResults": 25},{"type": "TEXT_DETECTION"}]}]}
     
    var options = {
       method: 'POST',
