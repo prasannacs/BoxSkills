@@ -46,6 +46,7 @@ exports.imageSubscriber = (event, callback) => {
       if (!error && response.statusCode == 200) {
         var labels = body.responses[0].labelAnnotations;
         labels.forEach(label => entriesTags.push({'text': label.description}))
+        labels.forEach(label => console.log('LD ',label.description));
               // Initialize a basic Box client with the access token
         let client = sdk.getBasicClient(writeToken);
         client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
