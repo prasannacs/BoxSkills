@@ -26,50 +26,55 @@ exports.imageSubscriber = (event, callback) => {
         clientID: 'foo',
         clientSecret: 'bar'
     });
-    
-    var entriesTags = [];
+
+    var labelTags = [];
+    var textTags = [];
 
     var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
-    var visionBody = {"requests": [{"image": {"source": {"imageUri": boxFileURL}},"features": [{"type": "LABEL_DETECTION","maxResults": 25},{"type": "TEXT_DETECTION"}]}]}
-    
-   var options = {
-      method: 'POST',
-      json: visionBody,
-      url: 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAuf-Etfi6ImFsdkH8Ws2mTNXFZWkTIeb0',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    var visionBody = { "requests": [{ "image": { "source": { "imageUri": boxFileURL } }, "features": [{ "type": "LABEL_DETECTION" }, { "type": "TEXT_DETECTION" }] }] }
+
+    var options = {
+        method: 'POST',
+        json: visionBody,
+        url: 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAuf-Etfi6ImFsdkH8Ws2mTNXFZWkTIeb0',
+        headers: {
+            'Content-Type': 'application/json'
+        }
     }
 
     function callback(error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var labels = body.responses[0].labelAnnotations;
-        labels.forEach(label => entriesTags.push({'text': label.description}))
-        console.log('Vision API processing completed',entriesTags);
+        if (!error && response.statusCode == 200) {
+            var labels = body.responses[0].labelAnnotations;
+            labels.forEach(label => labelTags.push({ 'text': label.description }))
 
-              // Initialize a basic Box client with the access token
-        let client = sdk.getBasicClient(writeToken);
-        client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
-            if (error) {
-                console.log('Error in adding metadata ', error);
-            }
-            else {
+            var texts = body.responses[0].textAnnotations;
+            texts.forEach(text => textTags.push({ 'text': text.description }))
 
-                res = {
-                    statusCode: 200,
-                    body: "Vision Skill Done"
+            console.log('Vision API processing completed Label tags -- ', labelTags, ' Text tags', textTags);
+
+            // Initialize a basic Box client with the access token
+            let client = sdk.getBasicClient(writeToken);
+            client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
+                if (error) {
+                    console.log('Error in adding metadata ', error);
                 }
-                console.log("skill updated");
-                return res;
-            }
-        });
+                else {
 
-      }
-      if (error)  {
-        console.log('Error--',error)
-      }
+                    res = {
+                        statusCode: 200,
+                        body: "Vision Skill Done"
+                    }
+                    console.log("skill updated");
+                    return res;
+                }
+            });
+
+        }
+        if (error) {
+            console.log('Error--', error)
+        }
     }
- 
+
     Request(options, callback);
 
     // Create a  keyword metadata card
@@ -79,16 +84,32 @@ exports.imageSubscriber = (event, callback) => {
                 "skill_card_type": "keyword",
                 "skill": {
                     "type": "service",
-                    "id": "box-skill-google-vision"
+                    "id": "box-skill-google-vision-label"
                 },
                 "invocation": {
                     "type": "skill_invocation",
                     "id": "5555"
                 },
                 "skill_card_title": {
-                    "message": "Google Vision Tags"
+                    "message": "Google Vision Labels"
                 },
-                "entries": entriesTags
+                "entries": labelTags
+            },
+            {
+                "type": "skill_card",
+                "skill_card_type": "keyword",
+                "skill": {
+                    "type": "service",
+                    "id": "box-skill-google-vision-text"
+                },
+                "invocation": {
+                    "type": "skill_invocation",
+                    "id": "5555"
+                },
+                "skill_card_title": {
+                    "message": "Google Vision Text"
+                },
+                "entries": textTags
             }
         ]
     }
