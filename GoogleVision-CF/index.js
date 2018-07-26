@@ -45,21 +45,53 @@ exports.imageSubscriber = (event, callback) => {
     function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
             var labels = body.responses[0].labelAnnotations;
-            if(labels != undefined) {
+            if (labels != undefined) {
                 labels.forEach(label => labelTags.push({ 'text': label.description }))
             }
 
             var texts = body.responses[0].textAnnotations;
-            if(texts != undefined) {
-                 texts.forEach(text => textTags.push({ 'text': text.description }))
+            if (texts != undefined) {
+                texts.forEach(text => textTags.push({ 'text': text.description }))
             }
 
             console.log('Vision API processing completed Label tags -- ', labelTags, ' Text tags', textTags);
 
             // Initialize a basic Box client with the access token
             let client = sdk.getBasicClient(writeToken);
+            /*
             client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
                 if (error) {
+                    console.log('Error in adding metadata ', error);
+                }
+                else {
+
+                    res = {
+                        statusCode: 200,
+                        body: "Vision Skill Done"
+                    }
+                    console.log("skill updated");
+                    return res;
+                }
+            });
+            */
+            client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
+                if (cCard != undefined) {
+                    console.log("Cards -- ", cCard.cards[0]);
+                    for (var i = 0; i < cCard.cards.length; i++) {
+                        keywordsMetadata.cards[keywordsMetadata.cards.length] = cCard.cards[i];
+                    }
+                    console.log('keywordsMetadata -- ', keywordsMetadata.cards.length);
+                    client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards', function(error, res) {
+                        if (error) {
+                            console.log('Metadata cannot be deleted')
+                        }
+                    });
+
+                }
+            });
+            client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
+                if (error) {
+                    console.log('keywordsMetadata ', keywordsMetadata);
                     console.log('Error in adding metadata ', error);
                 }
                 else {
