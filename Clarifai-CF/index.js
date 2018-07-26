@@ -66,7 +66,7 @@ exports.clarifaiImageSubscriber = (event, callback) => {
         if (!error && response.statusCode == 200) {
             let client = sdk.getBasicClient(writeToken);
             var labels = body.outputs[0].data.concepts;
-            labels.forEach(label => labelTags.push(label.name))
+            labels.forEach(label => labelTags.push({ 'text': label.name }))
             console.log('Labeltags -- ', labelTags);
             // update metadata
             client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
