@@ -41,52 +41,6 @@ exports.clarifaiImageSubscriber = (event, callback) => {
         }
     }
 
-    function callback(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            let client = sdk.getBasicClient(writeToken);
-            var labels = body.outputs[0].data.concepts;
-            labels.forEach(label => labelTags.push(label.name))
-            console.log('Labeltags -- ', labelTags);
-            // update metadata
-            client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
-
-                if (cCard != undefined) {
-                    console.log("Cards -- ", cCard.cards[0]);
-                    for (var i = 0; i < cCard.cards.length; i++) {
-                        keywordsMetadata.cards[keywordsMetadata.cards.length] = cCard.cards[i];
-                    }
-                    console.log('keywordsMetadata -- ', keywordsMetadata.cards.length);
-                    client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards', function(error, res) {
-                        if (error) {
-                            console.log('Metadata cannot be deleted')
-                        }
-                    });
-                }
-
-                client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
-                    if (error) {
-                        console.log('Error in adding metadata ');
-                    }
-                    else {
-
-                        res = {
-                            statusCode: 200,
-                            body: "Vision Skill Done"
-                        }
-                        console.log("skill updated");
-                        return res;
-                    }
-                });
-            });
-
-        }
-        if (error) {
-            console.log('Error--', error);
-        }
-    }
-
-    Request(options, callback);
-
     // Create a  keyword metadata card
     let keywordsMetadata = {
         "cards": [{
@@ -106,4 +60,47 @@ exports.clarifaiImageSubscriber = (event, callback) => {
             "entries": labelTags
         }]
     }
+
+
+    function callback(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            let client = sdk.getBasicClient(writeToken);
+            var labels = body.outputs[0].data.concepts;
+            labels.forEach(label => labelTags.push(label.name))
+            console.log('Labeltags -- ', labelTags);
+            // update metadata
+            client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
+                if (cCard != undefined) {
+                    console.log("Cards -- ", cCard.cards[0]);
+                    for (var i = 0; i < cCard.cards.length; i++) {
+                        keywordsMetadata.cards[keywordsMetadata.cards.length] = cCard.cards[i];
+                    }
+                    console.log('keywordsMetadata -- ', keywordsMetadata.cards.length);
+                    client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards', function(error, res) {
+                        if (error) {
+                            console.log('Metadata cannot be deleted')
+                        }
+                    });
+
+                }
+            });
+            client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
+                if (error) {
+                    console.log('keywordsMetadata ',keywordsMetadata);
+                    console.log('Error in adding metadata ',error);
+                }
+                else {
+
+                    res = {
+                        statusCode: 200,
+                        body: "Vision Skill Done"
+                    }
+                    console.log("skill updated");
+                    return res;
+                }
+            });
+
+        }
+    }
+    Request(options, callback);
 }
