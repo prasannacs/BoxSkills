@@ -20,6 +20,9 @@ module.exports = function boxSkills(req, res) {
         console.log("Not a valid file extension. File extension must be csv json or xml");
     }
 
+    res.send('Box Skills - Ack');
+}
+
     function publishMessage(topicName, dataBuffer) {
         const pubsub = new PubSub();
 
@@ -37,5 +40,3 @@ module.exports = function boxSkills(req, res) {
 
     }
 
-    res.send('Box Skills - Ack');
-}
