@@ -45,10 +45,14 @@ exports.imageSubscriber = (event, callback) => {
     function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
             var labels = body.responses[0].labelAnnotations;
-            labels.forEach(label => labelTags.push({ 'text': label.description }))
+            if(labels != undefined) {
+                labels.forEach(label => labelTags.push({ 'text': label.description }))
+            }
 
             var texts = body.responses[0].textAnnotations;
-            texts.forEach(text => textTags.push({ 'text': text.description }))
+            if(texts != undefined) {
+                 texts.forEach(text => textTags.push({ 'text': text.description }))
+            }
 
             console.log('Vision API processing completed Label tags -- ', labelTags, ' Text tags', textTags);
 
