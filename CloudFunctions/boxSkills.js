@@ -10,27 +10,32 @@ module.exports = function boxSkills(req, res) {
     var filext = fileName.substring(fileName.indexOf("."))
     if (filext == ".jpg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large") {
         console.log('Valid file ' + filext);
-        var topicName;
-        topicName = 'box-skills-image-topic'
-        console.log('topic ', topicName);
-        const pubsub = new PubSub();
         var concatBuff = fileName + '-Skills-' + fileId + '-Skills-' + readToken + '-Skills-' + writeToken;
         console.log('Buff string', concatBuff);
         const dataBuffer = Buffer.from(concatBuff);
+        publishMessage('box-skills-image-topic', dataBuffer);
+        publishMessage('box-skills-clarifai-topic', dataBuffer);
+    }
+    else {
+        console.log("Not a valid file extension. File extension must be csv json or xml");
+    }
+
+    function publishMessage(topicName, dataBuffer) {
+        const pubsub = new PubSub();
+
         pubsub
             .topic(topicName)
             .publisher()
             .publish(dataBuffer)
             .then(results => {
                 const messageId = results[0];
-                console.log(`Message ${messageId} published.`);
+                console.log(`Message ${messageId} published.`, topicName);
             })
             .catch(err => {
                 console.error('ERROR in publishing file name:', err);
             });
+
     }
-    else {
-        console.log("Not a valid file extension. File extension must be csv json or xml");
-    }
+
     res.send('Box Skills - Ack');
 }
