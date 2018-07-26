@@ -1,1 +1,19 @@
-
+{
+  "name": "clarifai-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "author": "prasannacs",
+  "license": "ISC",
+  "dependencies": {
+    "box-node-sdk": "^1.19.0",
+    "request":"^2.81.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.1"
+  }
+}
