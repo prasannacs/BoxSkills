@@ -6,30 +6,31 @@ module.exports = function boxSkills(req, res) {
     var readToken = req.body.token.read.access_token;
     var writeToken = req.body.token.write.access_token;
     console.log(fileName);
-    
+
     var filext = fileName.substring(fileName.indexOf("."))
-  if( filext == ".jpg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" ) {
-    console.log('Valid file '+filext);
-    var topicName;
-	topicName = 'box-skills-image-topic'
-    console.log('topic ',topicName);
-    const pubsub = new PubSub();
-    var concatBuff = fileName+'-Skills-'+fileId+'-Skills-'+readToken+'-Skills-'+writeToken;
-    console.log('Buff string',concatBuff);
-    const dataBuffer = Buffer.from(concatBuff);
-    pubsub
-     .topic(topicName)
-     .publisher()
-     .publish(dataBuffer)
-     .then(results => {
-    const messageId = results[0];
-    console.log(`Message ${messageId} published.`);
-  })
-  .catch(err => {
-    console.error('ERROR in publishing file name:', err);
-  });
-  }else {
-    console.log("Not a valid file extension. File extension must be csv json or xml");
-  }
+    if (filext == ".jpg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large") {
+        console.log('Valid file ' + filext);
+        var topicName;
+        topicName = 'box-skills-image-topic'
+        console.log('topic ', topicName);
+        const pubsub = new PubSub();
+        var concatBuff = fileName + '-Skills-' + fileId + '-Skills-' + readToken + '-Skills-' + writeToken;
+        console.log('Buff string', concatBuff);
+        const dataBuffer = Buffer.from(concatBuff);
+        pubsub
+            .topic(topicName)
+            .publisher()
+            .publish(dataBuffer)
+            .then(results => {
+                const messageId = results[0];
+                console.log(`Message ${messageId} published.`);
+            })
+            .catch(err => {
+                console.error('ERROR in publishing file name:', err);
+            });
+    }
+    else {
+        console.log("Not a valid file extension. File extension must be csv json or xml");
+    }
     res.send('Box Skills - Ack');
 }
