@@ -41,27 +41,6 @@ exports.clarifaiImageSubscriber = (event, callback) => {
         }
     }
 
-    // Create a  keyword metadata card
-    let keywordsMetadata = {
-        "cards": [{
-            "type": "skill_card",
-            "skill_card_type": "keyword",
-            "skill": {
-                "type": "service",
-                "id": "box-skill-clarifai-label"
-            },
-            "invocation": {
-                "type": "skill_invocation",
-                "id": "5555"
-            },
-            "skill_card_title": {
-                "message": "Clarifai Labels"
-            },
-            "entries": labelTags
-        }]
-    }
-
-
     function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
             let client = sdk.getBasicClient(writeToken);
@@ -103,4 +82,25 @@ exports.clarifaiImageSubscriber = (event, callback) => {
         }
     }
     Request(options, callback);
+    
+    // Create a  keyword metadata card
+    let keywordsMetadata = {
+        "cards": [{
+            "type": "skill_card",
+            "skill_card_type": "keyword",
+            "skill": {
+                "type": "service",
+                "id": "box-skill-clarifai-label"
+            },
+            "invocation": {
+                "type": "skill_invocation",
+                "id": "5555"
+            },
+            "skill_card_title": {
+                "message": "Clarifai Labels"
+            },
+            "entries": labelTags
+        }]
+    }
+
 }
