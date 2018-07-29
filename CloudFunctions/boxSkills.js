@@ -14,7 +14,7 @@ module.exports = function boxSkills(req, res) {
         console.log('Buff string', concatBuff);
         const dataBuffer = Buffer.from(concatBuff);
         publishMessage('box-skills-image-topic', dataBuffer);
-        //publishMessage('box-skills-clarifai-topic', dataBuffer);
+        publishMessage('box-skills-clarifai-topic', dataBuffer);
     }
     else {
         console.log("Not a valid file extension. File extension must be csv json or xml");
