@@ -42,6 +42,7 @@ exports.imageSubscriber = (event, callback) => {
         }
     }
 
+
     function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
             var labels = body.responses[0].labelAnnotations;
@@ -58,52 +59,35 @@ exports.imageSubscriber = (event, callback) => {
 
             // Initialize a basic Box client with the access token
             let client = sdk.getBasicClient(writeToken);
-            /*
-            client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
-                if (error) {
-                    console.log('Error in adding metadata ', error);
+
+            client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
+
+                if (cCard != undefined) {
+                    console.log('update skills cards --', getSkillsCard(labelTags))
+                    var updates = [{ "op": "add", "path": "/cards/-", "value": getSkillsCard(labelTags) }];
+                    client.files.updateMetadata(fileId, 'global', "boxSkillsCards", updates)
+
                 }
                 else {
-
-                    res = {
-                        statusCode: 200,
-                        body: "Vision Skill Done"
-                    }
-                    console.log("skill updated");
-                    return res;
-                }
-            });
-            */
-            client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
-                if (cCard != undefined) {
-                    console.log("Cards -- ", cCard.cards[0]);
-                    for (var i = 0; i < cCard.cards.length; i++) {
-                        keywordsMetadata.cards[keywordsMetadata.cards.length] = cCard.cards[i];
-                    }
-                    console.log('keywordsMetadata -- ', keywordsMetadata.cards.length);
-                    client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards', function(error, res) {
+                    console.log("keywords metadata ", getSkillsCardArray(labelTags, textTags));
+                    client.files.addMetadata(fileId, 'global', 'boxSkillsCards', getSkillsCardArray(labelTags, textTags), (error, res) => {
                         if (error) {
-                            console.log('Metadata cannot be deleted')
+                            console.log('Error in adding metadata ');
+                        }
+                        else {
+
+                            res = {
+                                statusCode: 200,
+                                body: "Vision Skill Done"
+                            }
+                            console.log("skill updated");
+                            return res;
                         }
                     });
 
                 }
-            });
-            client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
-                if (error) {
-                    console.log('keywordsMetadata ', keywordsMetadata);
-                    console.log('Error in adding metadata ', error);
-                }
-                else {
+            })
 
-                    res = {
-                        statusCode: 200,
-                        body: "Vision Skill Done"
-                    }
-                    console.log("skill updated");
-                    return res;
-                }
-            });
 
         }
         if (error) {
@@ -111,42 +95,35 @@ exports.imageSubscriber = (event, callback) => {
         }
     }
 
+    function getSkillsCardArray(labelTags, textTags) {
+        // Create a  keyword metadata card
+        var keywordsMetadata = {
+            "cards": [getSkillsCard(labelTags), getSkillsCard(textTags)]
+        }
+        return keywordsMetadata;
+    }
+
+    function getSkillsCard(tags) {
+        var updateSkillCard = {
+            "type": "skill_card",
+            "skill_card_type": "keyword",
+            "skill": {
+                "type": "service",
+                "id": "box-skill-clarifai-label"
+            },
+            "invocation": {
+                "type": "skill_invocation",
+                "id": "5555"
+            },
+            "skill_card_title": {
+                "message": "Clarifai Labels"
+            },
+            "entries": tags
+        }
+        return updateSkillCard;
+
+    }
+
     Request(options, callback);
 
-    // Create a  keyword metadata card
-    let keywordsMetadata = {
-        "cards": [{
-                "type": "skill_card",
-                "skill_card_type": "keyword",
-                "skill": {
-                    "type": "service",
-                    "id": "box-skill-google-vision-label"
-                },
-                "invocation": {
-                    "type": "skill_invocation",
-                    "id": "5555"
-                },
-                "skill_card_title": {
-                    "message": "Google Vision Labels"
-                },
-                "entries": labelTags
-            },
-            {
-                "type": "skill_card",
-                "skill_card_type": "keyword",
-                "skill": {
-                    "type": "service",
-                    "id": "box-skill-google-vision-text"
-                },
-                "invocation": {
-                    "type": "skill_invocation",
-                    "id": "5555"
-                },
-                "skill_card_title": {
-                    "message": "Google Vision Text"
-                },
-                "entries": textTags
-            }
-        ]
-    }
 }
