@@ -49,43 +49,49 @@ exports.clarifaiImageSubscriber = (event, callback) => {
             console.log('Labeltags -- ', labelTags);
             // update metadata
             client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
+
                 if (cCard != undefined) {
-                    console.log("Cards -- ", cCard.cards[0]);
-                    for (var i = 0; i < cCard.cards.length; i++) {
-                        keywordsMetadata.cards[keywordsMetadata.cards.length] = cCard.cards[i];
-                    }
-                    console.log('keywordsMetadata -- ', keywordsMetadata.cards.length);
-                    client.files.deleteMetadata(fileId, 'global', 'boxSkillsCards', function(error, res) {
+
+                    var updates = [{ "op": "add", "path": "/cards/-", "value": getSkillsCard(labelTags) }];
+                    console.log('Skills card -- ',getSkillsCard(labelTags))
+
+                    client.files.updateMetadata(fileId, 'global', "boxSkillsCards", updates)
+
+                }
+                else {
+                    client.files.addMetadata(fileId, 'global', 'boxSkillsCards', getSkillsCardArray(labelTags), (error, res) => {
+                        console.log('Skills cards array - clarifai ',getSkillsCardArray(labelTags));
                         if (error) {
-                            console.log('Metadata cannot be deleted')
+                            console.log('Error in adding metadata ');
+                        }
+                        else {
+
+                            res = {
+                                statusCode: 200,
+                                body: "Clarifai Skill Done"
+                            }
+                            console.log("skill updated");
+                            return res;
                         }
                     });
 
                 }
-            });
-            client.files.addMetadata(fileId, 'global', 'boxSkillsCards', keywordsMetadata, (error, res) => {
-                if (error) {
-                    console.log('keywordsMetadata ',keywordsMetadata);
-                    console.log('Error in adding metadata ',error);
-                }
-                else {
-
-                    res = {
-                        statusCode: 200,
-                        body: "Vision Skill Done"
-                    }
-                    console.log("skill updated");
-                    return res;
-                }
-            });
+            })
 
         }
     }
     Request(options, callback);
-    
-    // Create a  keyword metadata card
-    let keywordsMetadata = {
-        "cards": [{
+
+    function getSkillsCardArray(tags) {
+        // Create a  keyword metadata card
+        var keywordsMetadata = {
+            "cards": [getSkillsCard(tags)]
+        }
+        return keywordsMetadata;
+    }
+
+    function getSkillsCard(tags) {
+        var updateSkillCard = {
             "type": "skill_card",
             "skill_card_type": "keyword",
             "skill": {
@@ -99,8 +105,11 @@ exports.clarifaiImageSubscriber = (event, callback) => {
             "skill_card_title": {
                 "message": "Clarifai Labels"
             },
-            "entries": labelTags
-        }]
+            "entries": tags
+        }
+        return updateSkillCard;
+
     }
+
 
 }
