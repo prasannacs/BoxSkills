@@ -8,7 +8,7 @@ module.exports = function boxSkills(req, res) {
     console.log(fileName);
 
     var filext = fileName.substring(fileName.indexOf("."))
-    if (filext == ".jpg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large") {
+    if (filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large") {
         console.log('Valid file ' + filext);
         var concatBuff = fileName + '-Skills-' + fileId + '-Skills-' + readToken + '-Skills-' + writeToken;
         console.log('Buff string', concatBuff);
