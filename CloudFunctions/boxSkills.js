@@ -1,7 +1,7 @@
 const PubSub = require(`@google-cloud/pubsub`);
 
 // Your Google Cloud Platform project ID
-const projectId = 'sixth-hawk-194719 ';
+const projectId = 'sixth-hawk-194719';
 
 // Instantiates a client
 const pubsubClient = new PubSub({
