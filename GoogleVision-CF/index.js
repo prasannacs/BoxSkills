@@ -63,8 +63,9 @@ exports.imageSubscriber = (event, callback) => {
             client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
 
                 if (cCard != undefined) {
-                    console.log('update skills cards --', getSkillsCard(labelTags))
-                    var updates = [{ "op": "add", "path": "/cards/-", "value": getSkillsCard(labelTags) }];
+                    console.log('update skills cards --', getSkillsCard(labelTags,'Google Vision Labels'))
+                    var updates = [{ "op": "add", "path": "/cards/-", "value": getSkillsCard(labelTags, 'Google Vision Labels') },
+                                  { "op": "add", "path": "/cards/-", "value": getSkillsCard(textTags, 'Google Vision OCR') }];
                     client.files.updateMetadata(fileId, 'global', "boxSkillsCards", updates)
 
                 }
@@ -98,25 +99,25 @@ exports.imageSubscriber = (event, callback) => {
     function getSkillsCardArray(labelTags, textTags) {
         // Create a  keyword metadata card
         var keywordsMetadata = {
-            "cards": [getSkillsCard(labelTags), getSkillsCard(textTags)]
+            "cards": [getSkillsCard(labelTags,'Google Vision Labels'), getSkillsCard(textTags,'Google Vision OCR')]
         }
         return keywordsMetadata;
     }
 
-    function getSkillsCard(tags) {
+    function getSkillsCard(tags, tagName) {
         var updateSkillCard = {
             "type": "skill_card",
             "skill_card_type": "keyword",
             "skill": {
                 "type": "service",
-                "id": "box-skill-clarifai-label"
+                "id": "box-skill-google-vision"
             },
             "invocation": {
                 "type": "skill_invocation",
                 "id": "5555"
             },
             "skill_card_title": {
-                "message": "Clarifai Labels"
+                "message": tagName
             },
             "entries": tags
         }
