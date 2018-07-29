@@ -32,9 +32,9 @@ module.exports = function boxSkills(req, res) {
 }
 
     function publishMessage(topicName, dataBuffer) {
-        //const pubsub = new PubSub();
+        const pubsub = new PubSub();
 
-        pubsubClient
+        pubsub
             .topic(topicName)
             .publisher()
             .publish(dataBuffer)
@@ -44,6 +44,8 @@ module.exports = function boxSkills(req, res) {
             })
             .catch(err => {
                 console.error('ERROR in publishing file name:', err);
+                Sleep.sleep(5);
+                return publishMessage(topicName,dataBuffer);
             });
 
     }
