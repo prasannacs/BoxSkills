@@ -44,8 +44,6 @@ module.exports = function boxSkills(req, res) {
             })
             .catch(err => {
                 console.error('ERROR in publishing file name:', err);
-                Sleep.sleep(5);
-                return publishMessage(topicName,dataBuffer);
             });
 
     }
