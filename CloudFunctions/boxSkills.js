@@ -41,7 +41,7 @@ module.exports = function boxSkills(req, res) {
         .publish(dataBuffer)
         .then(results => {
             const messageId = results[0];
-            console.log(`Message ${messageId} published.`, topicName);
+            console.log(`Message ${messageId} published.`);
         })
         .catch(err => {
             console.error('ERROR in publishing box-skills-image-topic:', err);
@@ -53,7 +53,7 @@ module.exports = function boxSkills(req, res) {
         .publish(dataBuffer)
         .then(results => {
             const messageId = results[0];
-            console.log(`Message ${messageId} published.`, topicName);
+            console.log(`Message ${messageId} published.`);
         })
         .catch(err => {
             console.error('ERROR in publishing box-skills-clarifai-topic:', err);
