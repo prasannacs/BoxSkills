@@ -1,11 +1,12 @@
 const PubSub = require(`@google-cloud/pubsub`);
+const google = require('googleapis');
 
 // Your Google Cloud Platform project ID
 const projectId = 'sixth-hawk-194719';
 
 // Instantiates a client
 const pubsubClient = new PubSub({
-  projectId: projectId,
+    projectId: projectId,
 });
 
 module.exports = function boxSkills(req, res) {
@@ -14,6 +15,23 @@ module.exports = function boxSkills(req, res) {
     var readToken = req.body.token.read.access_token;
     var writeToken = req.body.token.write.access_token;
     console.log(fileName);
+
+    if (true) {
+        google.auth.getApplicationDefault(function(err, authClient, projectId) {
+                if (err) {
+                    throw err;
+                }
+
+                if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+                    authClient = authClient.createScoped([
+                        'https://www.googleapis.com/auth/cloud-platform',
+                        'https://www.googleapis.com/auth/userinfo.email'
+                    ]);
+                }
+            }
+
+        )
+    }
 
     var filext = fileName.substring(fileName.indexOf("."))
     if (filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large") {
@@ -31,20 +49,19 @@ module.exports = function boxSkills(req, res) {
     res.send('Box Skills - Ack');
 }
 
-    function publishMessage(topicName, dataBuffer) {
-        const pubsub = new PubSub();
+function publishMessage(topicName, dataBuffer) {
+    const pubsub = new PubSub();
 
-        pubsub
-            .topic(topicName)
-            .publisher()
-            .publish(dataBuffer)
-            .then(results => {
-                const messageId = results[0];
-                console.log(`Message ${messageId} published.`, topicName);
-            })
-            .catch(err => {
-                console.error('ERROR in publishing file name:', err);
-            });
+    pubsub
+        .topic(topicName)
+        .publisher()
+        .publish(dataBuffer)
+        .then(results => {
+            const messageId = results[0];
+            console.log(`Message ${messageId} published.`, topicName);
+        })
+        .catch(err => {
+            console.error('ERROR in publishing file name:', err);
+        });
 
-    }
-
+}
