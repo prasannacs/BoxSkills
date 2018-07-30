@@ -46,7 +46,7 @@ module.exports = function boxSkills(req, res) {
         .catch(err => {
             console.error('ERROR in publishing box-skills-image-topic:', err);
         });
-
+/*
             pubsub
         .topic('box-skills-clarifai-topic')
         .publisher()
@@ -58,6 +58,7 @@ module.exports = function boxSkills(req, res) {
         .catch(err => {
             console.error('ERROR in publishing box-skills-clarifai-topic:', err);
         });
+        */
 
     }
     else {
