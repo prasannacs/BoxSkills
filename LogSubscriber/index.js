@@ -4,6 +4,11 @@ const PubSub = require(`@google-cloud/pubsub`);
 
 exports.logSubscriber = (event, callback) => {
     
+   const pubsubMessage = event.data;
+    console.log('Google Vision - Image subscriber');
+    var str = Buffer.from(pubsubMessage.data, 'base64').toString();
+    console.log(str);
+    
     const pubsub = new PubSub();
     const subscriptionName = 'log-subscriber';
 
