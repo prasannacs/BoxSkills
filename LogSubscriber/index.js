@@ -1,6 +1,6 @@
 // Imports the Google Cloud client library
 const BoxSDK = require('box-node-sdk');
-const Request = require("request");
+const PubSub = require(`@google-cloud/pubsub`);
 
 exports.imageSubscriber = (event, callback) => {
     const pubsubMessage = event.data;
