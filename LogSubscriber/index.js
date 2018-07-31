@@ -2,7 +2,7 @@
 const BoxSDK = require('box-node-sdk');
 const PubSub = require(`@google-cloud/pubsub`);
 
-exports.imageSubscriber = (event, callback) => {
+exports.logSubscriber = (event, callback) => {
     
     const pubsub = new PubSub();
     const subscriptionName = 'log-subscriber';
