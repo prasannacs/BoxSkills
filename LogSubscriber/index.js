@@ -7,28 +7,6 @@ exports.logSubscriber = (event, callback) => {
     const pubsub = new PubSub();
     const subscriptionName = 'log-subscriber';
 
-    
-    /*
-    const pubsubMessage = event.data;
-    console.log('Google Vision - Image subscriber');
-    var str = Buffer.from(pubsubMessage.data, 'base64').toString();
-    console.log(str);
-
-    var fileName = str.slice(0, str.indexOf('-Skills-'));
-    str = str.slice(fileName.length + 8, str.length);
-    var fileId = str.slice(0, str.indexOf('-Skills-'));
-    str = str.slice(fileId.length + 8, str.length);
-    var readToken = str.slice(0, str.indexOf('-Skills-'));
-    str = str.slice(readToken.length + 8, str.length);
-    var writeToken = str;
-
-    console.log('fileName -- ', fileName);
-    console.log('fileId -- ', fileId);
-    console.log('readToken -- ', readToken);
-    console.log('writeToken -- ', writeToken);
-    */
-
-    function subscribe() {
 
         const timeout = 60;
 
@@ -53,6 +31,25 @@ exports.logSubscriber = (event, callback) => {
             subscription.removeListener('message', messageHandler);
             console.log(`${messageCount} message(s) received.`);
         }, timeout * 1000);
-    }
+    
+    /*
+    const pubsubMessage = event.data;
+    console.log('Google Vision - Image subscriber');
+    var str = Buffer.from(pubsubMessage.data, 'base64').toString();
+    console.log(str);
+
+    var fileName = str.slice(0, str.indexOf('-Skills-'));
+    str = str.slice(fileName.length + 8, str.length);
+    var fileId = str.slice(0, str.indexOf('-Skills-'));
+    str = str.slice(fileId.length + 8, str.length);
+    var readToken = str.slice(0, str.indexOf('-Skills-'));
+    str = str.slice(readToken.length + 8, str.length);
+    var writeToken = str;
+
+    console.log('fileName -- ', fileName);
+    console.log('fileId -- ', fileId);
+    console.log('readToken -- ', readToken);
+    console.log('writeToken -- ', writeToken);
+    */
 
 }
