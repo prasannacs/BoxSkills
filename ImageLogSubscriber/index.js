@@ -15,7 +15,7 @@ exports.imageLogSubscriber = (event, callback) => {
     console.log('Tags -- ', tagArray);
 
     var mlProvider;
-    if (tagArray[0].description != 'undefined' && tagArray[0].score != 'undefined') {
+    if (tagArray.tags[0].description != 'undefined' && tagArray.tags[0].score != 'undefined') {
         mlProvider = 'Google Vision';
     }
     else {
@@ -37,8 +37,8 @@ exports.imageLogSubscriber = (event, callback) => {
 
     var rows = [];
 
-    tagArray.forEach(label => {
-        rows.push({ file_id: "1", file_name: "1", tag: label.description, score: label.score, created: datetime, updated: datetime });
+    tagArray.tags.forEach(label => {
+        rows.push({ file_id: tagArray.fileId, file_name: tagArray.fileName, tag: label.description, score: label.score, created: datetime, updated: datetime });
 
     });
 
