@@ -10,15 +10,21 @@ const bigquery = new BigQuery({
 });
 exports.imageLogSubscriber = (event, callback) => {
 
-    console.log('event -- ', event);
     const pubsubMessage = event.data;
-    console.log('Image Log subscriber',event.data);
-    var str = Buffer.from(pubsubMessage.data, 'base64').toString();
-    console.log(str);
-    
-    /*
+    var tagArray = Buffer.from(pubsubMessage.data, 'base64').toString();
+    console.log('Tags -- ', tagArray);
+
+    var mlProvider;
+    if (tagArray[0].description != 'undefined' && tagArray[0].score != 'undefined') {
+        mlProvider = 'Google Vision';
+    }
+    else {
+        console.log('Image subscriber log event data not conforming to any standard ', pubsubMessage);
+        return;
+    }
+
     const datasetId = "box_skills";
-    const tableId = "file";
+    const tableId = "image_label_tags";
     var date = new Date();
     const datetime = BigQuery.datetime({
         year: date.getFullYear(),
@@ -29,8 +35,14 @@ exports.imageLogSubscriber = (event, callback) => {
         seconds: date.getSeconds()
     });
 
-    const rows = [{ file_id: fileId, file_name: fileName, read_token: readToken, write_token: writeToken, created: datetime, updated: datetime }];
+    var rows = [];
 
+    tagArray.forEach(label => {
+        rows.push({ file_id: "1", file_name: "1", tag: label.description, score: label.score, created: datetime, updated: datetime });
+
+    });
+
+    console.log("Rows to insert -- ",rows);
     // Inserts data into a table
     bigquery
         .dataset(datasetId)
@@ -51,5 +63,5 @@ exports.imageLogSubscriber = (event, callback) => {
             }
         });
 
-*/
+
 }
