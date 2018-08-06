@@ -18,10 +18,10 @@ exports.imageLogSubscriber = (event, callback) => {
 
 
     var mlProvider;
-    if (tagArray.tags[0].mid != 'undefined') {
+    if (tagArray.tags[0].mid != undefined) {
         mlProvider = 'Google Vision';
     } 
-    else if(tagArray.tags[0].id != 'undefined') {
+    else if(tagArray.tags[0].id != undefined) {
         mlProvider = 'Clarifai';
     }
     else {
