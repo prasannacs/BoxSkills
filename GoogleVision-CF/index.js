@@ -50,7 +50,7 @@ exports.imageSubscriber = (event, callback) => {
             var labels = body.responses[0].labelAnnotations;
             if (labels != undefined) {
                 labels.forEach(label => labelTags.push({ 'text': label.description }))
-                const dataBuffer = Buffer.from(labels);
+                const dataBuffer = Buffer.from(JSON.stringify(labels));
                 publishMessage('box-skills-image-tag-topic', dataBuffer);
 
             }
