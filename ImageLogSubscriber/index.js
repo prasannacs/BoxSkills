@@ -21,14 +21,14 @@ exports.imageLogSubscriber = (event, callback) => {
     if (tagArray.tags[0].mid != 'undefined') {
         mlProvider = 'Google Vision';
     } 
-    if(tagArray.tags[0].id != 'undefined') {
+    else if(tagArray.tags[0].id != 'undefined') {
         mlProvider = 'Clarifai';
     }
     else {
         console.log('Image subscriber log event data not conforming to any standard ', pubsubMessage);
         return;
     }
-    console.log('ML Provider',mlProvider);
+    console.log('ML Provider',mlProvider,' ', tagArray.tags[0].mid,' ', tagArray.tags[0].id);
 
     const datasetId = "box_skills";
     const tableId = "image_label_tags";
@@ -53,7 +53,7 @@ exports.imageLogSubscriber = (event, callback) => {
     if( mlProvider == 'Clarifai')  {
         // Clarifai
        tagArray.tags.forEach(label => {
-        rows.push({ file_id: tagArray.fileId, ml_provider: mlProvider, tag: label.text, score: label.value, created: datetime, updated: datetime });
+        rows.push({ file_id: tagArray.fileId, ml_provider: mlProvider, tag: label.name, score: label.value, created: datetime, updated: datetime });
 
     });     
     }
