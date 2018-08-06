@@ -20,6 +20,8 @@ exports.imageLogSubscriber = (event, callback) => {
     var mlProvider;
     if (tagArray.tags[0].description != 'undefined' && tagArray.tags[0].score != 'undefined') {
         mlProvider = 'Google Vision';
+    } else if(tagArray.tags[0].text != 'undefined' && tagArray.tags[0].value != 'undefined') {
+        mlProvider = 'Clarifai';
     }
     else {
         console.log('Image subscriber log event data not conforming to any standard ', pubsubMessage);
@@ -40,10 +42,18 @@ exports.imageLogSubscriber = (event, callback) => {
 
     var rows = [];
 
+    if( mlProvider == 'Google Vision')  {
     tagArray.tags.forEach(label => {
         rows.push({ file_id: tagArray.fileId, ml_provider: mlProvider, tag: label.description, score: label.score, created: datetime, updated: datetime });
 
     });
+    } else  {
+        // Clarifai
+       tagArray.tags.forEach(label => {
+        rows.push({ file_id: tagArray.fileId, ml_provider: mlProvider, tag: label.text, score: label.value, created: datetime, updated: datetime });
+
+    });     
+    }
 
     console.log("Rows to insert -- ",rows);
     // Inserts data into a table
