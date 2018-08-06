@@ -1,6 +1,7 @@
 // Imports the Google Cloud client library
 const BoxSDK = require('box-node-sdk');
 const Request = require("request");
+const PubSub = require(`@google-cloud/pubsub`);
 
 exports.clarifaiImageSubscriber = (event, callback) => {
     const pubsubMessage = event.data;
@@ -47,20 +48,25 @@ exports.clarifaiImageSubscriber = (event, callback) => {
             var labels = body.outputs[0].data.concepts;
             labels.forEach(label => labelTags.push({ 'text': label.name }))
             console.log('Labeltags -- ', labelTags);
+            var transData = { fileId: fileId, fileName: fileName, tags: labels };
+            console.log('Transmission data ', transData);
+            const dataBuffer = Buffer.from(JSON.stringify(transData));
+            publishMessage('box-skills-image-tag-topic', dataBuffer);
+
             // update metadata
             client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
 
                 if (cCard != undefined) {
 
                     var updates = [{ "op": "add", "path": "/cards/-", "value": getSkillsCard(labelTags) }];
-                    console.log('Skills card -- ',getSkillsCard(labelTags))
+                    console.log('Skills card -- ', getSkillsCard(labelTags))
 
                     client.files.updateMetadata(fileId, 'global', "boxSkillsCards", updates)
 
                 }
                 else {
                     client.files.addMetadata(fileId, 'global', 'boxSkillsCards', getSkillsCardArray(labelTags), (error, res) => {
-                        console.log('Skills cards array - clarifai ',getSkillsCardArray(labelTags));
+                        console.log('Skills cards array - clarifai ', getSkillsCardArray(labelTags));
                         if (error) {
                             console.log('Error in adding metadata ');
                         }
@@ -80,6 +86,24 @@ exports.clarifaiImageSubscriber = (event, callback) => {
 
         }
     }
+
+    function publishMessage(topicName, dataBuffer) {
+        const pubsub = new PubSub();
+
+        pubsub
+            .topic(topicName)
+            .publisher()
+            .publish(dataBuffer)
+            .then(results => {
+                const messageId = results[0];
+                console.log(`Message ${messageId} published.`, topicName);
+            })
+            .catch(err => {
+                console.error('ERROR in publishing tags to logger topic:', err);
+            });
+
+    }
+
     Request(options, callback);
 
     function getSkillsCardArray(tags) {
