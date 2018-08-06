@@ -38,7 +38,7 @@ exports.imageLogSubscriber = (event, callback) => {
     var rows = [];
 
     tagArray.tags.forEach(label => {
-        rows.push({ file_id: tagArray.fileId, file_name: tagArray.fileName, tag: label.description, score: label.score, created: datetime, updated: datetime });
+        rows.push({ file_id: tagArray.fileId, ml_provider: mlProvider, tag: label.description, score: label.score, created: datetime, updated: datetime });
 
     });
 
