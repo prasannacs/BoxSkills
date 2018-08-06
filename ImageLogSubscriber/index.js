@@ -12,7 +12,7 @@ exports.imageLogSubscriber = (event, callback) => {
 
     const pubsubMessage = event.data;
     var tagArray = Buffer.from(pubsubMessage.data, 'base64').toString();
-    console.log('Tags -- ', tagArray);
+    console.log('Tags -- ', tagArray.tags);
 
     var mlProvider;
     if (tagArray.tags[0].description != 'undefined' && tagArray.tags[0].score != 'undefined') {
