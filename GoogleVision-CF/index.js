@@ -2,6 +2,8 @@
 const vision = require('@google-cloud/vision');
 const BoxSDK = require('box-node-sdk');
 const Request = require("request");
+const PubSub = require(`@google-cloud/pubsub`);
+
 
 exports.imageSubscriber = (event, callback) => {
     const pubsubMessage = event.data;
@@ -48,6 +50,9 @@ exports.imageSubscriber = (event, callback) => {
             var labels = body.responses[0].labelAnnotations;
             if (labels != undefined) {
                 labels.forEach(label => labelTags.push({ 'text': label.description }))
+                const dataBuffer = Buffer.from(labels);
+                publishMessage('box-skills-image-tag-topic', dataBuffer);
+
             }
 
             var texts = body.responses[0].textAnnotations;
@@ -122,6 +127,23 @@ exports.imageSubscriber = (event, callback) => {
             "entries": tags
         }
         return updateSkillCard;
+
+    }
+    
+    function publishMessage(topicName, dataBuffer) {
+    const pubsub = new PubSub();
+
+    pubsub
+        .topic(topicName)
+        .publisher()
+        .publish(dataBuffer)
+        .then(results => {
+            const messageId = results[0];
+            console.log(`Message ${messageId} published.`, topicName);
+        })
+        .catch(err => {
+            console.error('ERROR in publishing tags to logger topic:', err);
+        });
 
     }
 
