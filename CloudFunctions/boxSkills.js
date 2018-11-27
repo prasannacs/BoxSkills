@@ -31,10 +31,11 @@ module.exports = function boxSkills(req, res) {
         var concatBuff = fileName + '-Skills-' + fileId + '-Skills-' + readToken + '-Skills-' + writeToken;
         console.log('Buff string', concatBuff);
         const dataBuffer = Buffer.from(concatBuff);
-  //      publishMessage('box-skills-image-topic', dataBuffer);
-  //      publishMessage('box-skills-clarifai-topic', dataBuffer);
-            const pubsub = new PubSub();
+        publishMessage('box-skills-image-topic', dataBuffer);
+        publishMessage('box-skills-clarifai-topic', dataBuffer);
+    //        const pubsub = new PubSub();
 
+        /*
     pubsub
         .topic('box-skills-image-topic')
         .publisher()
@@ -46,7 +47,7 @@ module.exports = function boxSkills(req, res) {
         .catch(err => {
             console.error('ERROR in publishing box-skills-image-topic:', err);
         });
-/*
+
             pubsub
         .topic('box-skills-clarifai-topic')
         .publisher()
