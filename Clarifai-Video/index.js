@@ -5,7 +5,7 @@ const PubSub = require(`@google-cloud/pubsub`);
 
 exports.clarifaiVideoSubscriber = (event, callback) => {
     const pubsubMessage = event.data;
-    console.log('Clarifai - Image subscriber');
+    console.log('Clarifai - Video subscriber');
     var str = Buffer.from(pubsubMessage.data, 'base64').toString();
     console.log(str);
 
@@ -27,10 +27,10 @@ exports.clarifaiVideoSubscriber = (event, callback) => {
         clientSecret: 'bar'
     });
 
-    var labelTags = [];
+    var frameTags = [];
 
     var boxFileURL = 'https://api.box.com/2.0/files/' + fileId + '/content?access_token=' + readToken;
-    var clarifaiBody = { "inputs": [{ "data": { "image": { "url": boxFileURL } } }] }
+    var clarifaiBody = { "inputs": [{ "data": { "video": { "url": boxFileURL } } }] }
 
     var options = {
         method: 'POST',
@@ -45,28 +45,28 @@ exports.clarifaiVideoSubscriber = (event, callback) => {
     function callback(error, response, body) {
         if (!error && response.statusCode == 200) {
             let client = sdk.getBasicClient(writeToken);
-            var labels = body.outputs[0].data.concepts;
-            labels.forEach(label => labelTags.push({ 'text': label.name }))
-            console.log('Labeltags -- ', labelTags);
-            var transData = { fileId: fileId, fileName: fileName, tags: labels };
+            var frames = body.outputs[0].data.frames;
+            frames.forEach(frame => frameTags.push({ 'text': data.concepts[0].name }))
+            console.log('Labeltags -- ', frameTags);
+            var transData = { fileId: fileId, fileName: fileName, tags: frames };
             console.log('Transmission data ', transData);
             const dataBuffer = Buffer.from(JSON.stringify(transData));
-            publishMessage('box-skills-image-tag-topic', dataBuffer);
+            //publishMessage('box-skills-image-tag-topic', dataBuffer);
 
             // update metadata
             client.files.getMetadata(fileId, 'global', 'boxSkillsCards', function(error, cCard) {
 
                 if (cCard != undefined) {
 
-                    var updates = [{ "op": "add", "path": "/cards/-", "value": getSkillsCard(labelTags) }];
-                    console.log('Skills card -- ', getSkillsCard(labelTags))
+                    var updates = [{ "op": "add", "path": "/cards/-", "value": getSkillsCard(frameTags) }];
+                    console.log('Skills card -- ', getSkillsCard(frameTags))
 
                     client.files.updateMetadata(fileId, 'global', "boxSkillsCards", updates)
 
                 }
                 else {
-                    client.files.addMetadata(fileId, 'global', 'boxSkillsCards', getSkillsCardArray(labelTags), (error, res) => {
-                        console.log('Skills cards array - clarifai ', getSkillsCardArray(labelTags));
+                    client.files.addMetadata(fileId, 'global', 'boxSkillsCards', getSkillsCardArray(frameTags), (error, res) => {
+                        console.log('Skills cards array - clarifai ', getSkillsCardArray(frameTags));
                         if (error) {
                             console.log('Error in adding metadata ');
                         }
@@ -74,7 +74,7 @@ exports.clarifaiVideoSubscriber = (event, callback) => {
 
                             res = {
                                 statusCode: 200,
-                                body: "Clarifai Skill Done"
+                                body: "Clarifai Video Skill Done"
                             }
                             console.log("skill updated");
                             return res;
