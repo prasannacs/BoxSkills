@@ -46,6 +46,7 @@ exports.clarifaiVideoSubscriber = (event, callback) => {
         if (!error && response.statusCode == 200) {
             let client = sdk.getBasicClient(writeToken);
             var frames = body.outputs[0].data.frames;
+            console.log('Frames --> ',frames);
             frames.forEach(frame => frameTags.push({ 'text': data.concepts[0].name }))
             console.log('Labeltags -- ', frameTags);
             var transData = { fileId: fileId, fileName: fileName, tags: frames };
