@@ -7,63 +7,22 @@ module.exports = function boxSkills(req, res) {
     var writeToken = req.body.token.write.access_token;
     console.log(fileName);
 
-    /*
-    if (true) {
-        google.auth.getApplicationDefault(function(err, authClient, projectId) {
-                if (err) {
-                    throw err;
-                }
-
-                if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-                    authClient = authClient.createScoped([
-                        'https://www.googleapis.com/auth/cloud-platform',
-                        'https://www.googleapis.com/auth/userinfo.email'
-                    ]);
-                }
-            }
-
-        )
-    }*/
-
     var filext = fileName.substring(fileName.indexOf("."))
-    if (filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large") {
+    if (filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" || filext == ".mp4" || filext == ".mpeg" ) {
         console.log('Valid file ' + filext);
         var concatBuff = fileName + '-Skills-' + fileId + '-Skills-' + readToken + '-Skills-' + writeToken;
         console.log('Buff string', concatBuff);
         const dataBuffer = Buffer.from(concatBuff);
-        publishMessage('box-skills-image-topic', dataBuffer);
-        publishMessage('box-skills-clarifai-topic', dataBuffer);
-    //        const pubsub = new PubSub();
-
-        /*
-    pubsub
-        .topic('box-skills-image-topic')
-        .publisher()
-        .publish(dataBuffer)
-        .then(results => {
-            const messageId = results[0];
-            console.log(`Message ${messageId} published.`);
-        })
-        .catch(err => {
-            console.error('ERROR in publishing box-skills-image-topic:', err);
-        });
-
-            pubsub
-        .topic('box-skills-clarifai-topic')
-        .publisher()
-        .publish(dataBuffer)
-        .then(results => {
-            const messageId = results[0];
-            console.log(`Message ${messageId} published.`);
-        })
-        .catch(err => {
-            console.error('ERROR in publishing box-skills-clarifai-topic:', err);
-        });
-        */
-
+        if( filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" )   {
+             publishMessage('box-skills-image-topic', dataBuffer);
+             publishMessage('box-skills-clarifai-topic', dataBuffer);
+        }
+        if( filext == ".mp4" || filext == ".mpeg" ) {
+             publishMessage('box-skills-clarifai-video-topic', dataBuffer);
+        }
     }
     else {
-        console.log("Not a valid file extension. File extension must be csv json or xml");
+        console.log("Not a valid file extension. File extension must be jpg, jpeg, png, bmp, jpg_large or mp4, mpeg");
     }
 
     res.send('Box Skills - Ack');
