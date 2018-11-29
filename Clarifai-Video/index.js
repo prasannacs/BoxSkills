@@ -47,7 +47,7 @@ exports.clarifaiVideoSubscriber = (event, callback) => {
             let client = sdk.getBasicClient(writeToken);
             var frames = body.outputs[0].data.frames;
             console.log('Frames --> ',frames);
-            frames.forEach(frame => frameTags.push({ 'text': frame.data.concepts[0].name }))
+            frames.forEach(frame => frameTags.push({ 'text': frame.data.concepts[0].name, 'appears' : [{ 'start': frame.frame_info.index, 'end': frame.frame_info.index + 1 }] }))
             console.log('Frame tags -- ', frameTags);
             var transData = { fileId: fileId, fileName: fileName, tags: frames };
             console.log('Transmission data ', transData);
