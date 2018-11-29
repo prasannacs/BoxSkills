@@ -50,7 +50,7 @@ exports.clarifaiVideoSubscriber = (event, callback) => {
             var videoDuration;
             for(var i=0;i<frames.length;i++)    {
                 var concepts = frames[i].data.concepts;
-                frameTags.push({ 'text': concepts[0], 'appears' : [{ 'start': frames[i].frame_info.index, 'end': parseFloat(frames[i].frame_info.index + 1) }] });
+                frameTags.push({ 'text': concepts[0].name, 'appears' : [{ 'start': frames[i].frame_info.index, 'end': parseFloat(frames[i].frame_info.index + 1) }] });
                 videoDuration = frames[i].frame_info.time;
             }
             //frames.forEach(frame => frameTags.push({ 'text': 'sample', 'appears' : [{ 'start': frame.frame_info.index, 'end': frame.frame_info.index + 1 }] }))
