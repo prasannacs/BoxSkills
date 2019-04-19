@@ -8,12 +8,12 @@ module.exports = function boxSkills(req, res) {
     console.log(fileName);
 
     var filext = fileName.substring(fileName.indexOf("."))
-    if (filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" || filext == ".mp4" || filext == ".mpeg" ) {
+    if (filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" || filext == ".mp4" || filext == ".mpeg" || filext == ".pdf") {
         console.log('Valid file ' + filext);
         var concatBuff = fileName + '-Skills-' + fileId + '-Skills-' + readToken + '-Skills-' + writeToken;
         console.log('Buff string', concatBuff);
         const dataBuffer = Buffer.from(concatBuff);
-        if( filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" )   {
+        if( filext == ".jpg" || filext == ".jpeg" || filext == ".png" || filext == ".bmp" || filext == ".jpg_large" || filext == ".pdf")   {
              publishMessage('box-skills-image-topic', dataBuffer);
              publishMessage('box-skills-clarifai-topic', dataBuffer);
         }
